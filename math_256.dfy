@@ -1,7 +1,5 @@
 /**
-  *  This module contains functions and lemmas related to arithmetic operations on 256-bit unsigned integers.
-  *  It includes bitwise operations, multiplication, and properties of powers of two.
-  *  It provides a mechanical proof of the correctness of the `checked_shlwv` function,
+  *  Provides a mechanical proof of the correctness of the `checked_shlwv` function,
   *  which performs a left shift operation on a 256-bit unsigned integer.
   */
 module math_u256 {
