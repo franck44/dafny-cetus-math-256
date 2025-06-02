@@ -27,7 +27,7 @@ module math_u256 {
     *   - r.1 is true iff n * 2^64 >= 2^256
     */
   function checked_shlw(n: bv256): (r: (bv256, bool))
-    // false indicates not overflow and n << 64 is equal to n as nat * Pow2(256)
+    // false indicates no overflow and n << 64 is equal to n as nat * Pow2(64)
     ensures !r.1 ==> r.0 as nat == n as nat * Pow2(64) < Pow2(256)
     // true indicates overflow if we compute n >> 64 as n as nat * Pow2(64)
     // does not fit within a bv256
