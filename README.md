@@ -7,7 +7,7 @@ The incident involved a vulnerability in the function `checked_shlw` function, w
 
 The function [checked_shlw](https://github.com/CetusProtocol/integer-mate/blob/06660f704c4ac1d443ab62346a46b5b60d49df33/sui/sources/math_u256.move#L18) is part of the math library [integer mate](https://github.com/CetusProtocol/integer-mate) ("libary" :smile: on the Cetus repo ...) and is implemented in the module `math_u256`.
 
-The function does not have a documentation, nor comments, and apparently it is not unit tested (even after the fix from last week). 
+The function does not have a documentation, nor comments, and apparently it is not unit tested (even after the fix from last week), or maybe in another file? 
 
 The "fixes" were applied to the Sui and Aptos versions of the library via 2 PRs:
 
