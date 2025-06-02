@@ -1,5 +1,5 @@
 /**
-  *  Provides a formal proof of the correctness of the `checked_shlwv` function,
+  *  Provides a formal proof of the correctness of the `checked_shlw` function,
   *  which performs a left shift operation on a 256-bit unsigned integer.
   */
 module math_u256 {
