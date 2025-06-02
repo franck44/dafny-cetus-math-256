@@ -1,5 +1,5 @@
 /**
-  *  Provides a mechanical proof of the correctness of the `checked_shlwv` function,
+  *  Provides a formal proof of the correctness of the `checked_shlwv` function,
   *  which performs a left shift operation on a 256-bit unsigned integer.
   */
 module math_u256 {
@@ -13,6 +13,9 @@ module math_u256 {
   // Use lemma Lemma2To64();
   import opened Std.BoundedInts
 
+  // define the u256 type
+  newtype u256 = x: int | 0 <= x < TWO_TO_THE_256
+
   /**
     * Performs a left shift by 64 bits on a 256-bit unsigned integer.
     * The function checks for overflow by testing if the input is larger than or equal to 2^192.
@@ -23,7 +26,7 @@ module math_u256 {
     *   - r.0 is the shifted value if no overflow, 0 otherwise
     *   - r.1 is true iff n * 2^64 >= 2^256
     */
-  function checked_shlwv(n: bv256): (r: (bv256, bool))
+  function checked_shlw(n: bv256): (r: (bv256, bool))
     // false indicates not overflow and n << 64 is equal to n as nat * Pow2(256)
     ensures !r.1 ==> r.0 as nat == n as nat * Pow2(64) < Pow2(256)
     // true indicates overflow if we compute n >> 64 as n as nat * Pow2(64)
@@ -49,6 +52,30 @@ module math_u256 {
       LemmaHelperShiftLeft64LessThanPow2_192(n);
       assert  (n << 64) as nat == n as nat * Pow2(64) < Pow2(256);
       (n << 64, false)
+  }
+
+  /**
+    * Calculates the division of a by b  and rounds up if enabled.
+    *
+    * @param a The dividend (numerator)
+    * @param b The divisor (denominator), must be positive
+    * @returns a/b, rounded up if round_up is `true` and num mod denom is non zero.
+    */
+  function div_roundup(num:u256, denom: u256, round_up: bool): (r: u256)
+    requires denom != 0
+    ensures !round_up || num % denom == 0 ==> r == num / denom
+    ensures round_up && num % denom != 0 ==> r as nat == (num as nat / denom as nat + 1) < TWO_TO_THE_256
+  {
+    var p := num /denom;
+    assert p * denom <= num;
+    assert p as nat * denom as nat < TWO_TO_THE_256;
+    if round_up && (p * denom != num) then
+      // no overflow here. This assert is not really need as the result is u256
+      // and Dafny flags overflows if the result does not fit in the type.
+      assert p as nat + 1 < TWO_TO_THE_256;
+      p + 1
+    else
+      p
   }
 
   //---------------------------------------------------------------
@@ -86,6 +113,15 @@ module math_u256 {
     }
   }
 
+  /**
+    * Prove if n is large enough (>= 2^192), shifting left by 64 bits will
+    * result in overflow.
+    * This lemma is used in the proof of checked_shlwv.
+    *
+    * @param n A 256-bit unsigned integer
+    * @requires n must be greater than or equal to 2^192
+    * @ensures The result of n as nat * 2^64 must be greater than or equal to 2^256 (overflow)
+    */
   lemma LemmaHelperShiftLeft64LargerThanPow2_192(n:bv256)
     requires n as nat >= Pow2(192)
     ensures n as nat * Pow2(64) >= Pow2(256)
