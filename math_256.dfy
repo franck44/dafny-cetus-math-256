@@ -8,7 +8,7 @@ module math_u256 {
 
   // Definition of 2^n (Power2(m))
   import opened Std.Arithmetic.Power2
-  // TWO_TO_THE_kk
+  // TWO_TO_THE_n
   import opened Std.BoundedInts
   import opened MathBVHelpers
 
